@@ -27,8 +27,3 @@ class CrossEntrophy:
             print(f"Total cross entrophy error (CEE) for mini batch:\n {np.sum(np.apply_along_axis(np.sum, 0, error)) / output.shape[0]}")
 
         return -np.divide(target, output)
-
-target = np.array([[[0.75], [0], [0.25]], [[0], [1], [0]]])
-output = np.array([[[0.5], [0.25], [0.25]], [[0.75], [0.125], [0.125]]])
-m = CrossEntrophy()
-print(m.calculate_error(target, output))
