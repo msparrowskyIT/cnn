@@ -1,11 +1,15 @@
 import numpy as np 
 
 class Dropout:
+    "Dropout for 2-D or 3D numpy arrays."
 
     def __init__(self, rate=0.5):
         self.rate = rate
 
     def __create_dropout_mask(self, input_shape):
+        """Create 2-D or 3-D dropout mask with constant proportion.
+        If 2-D, constant proportion on axis 0.
+        If 3-D, constant proportion on axis 1."""
         zeros = int(input_shape[-2] * self.rate)
         dropout_mask = np.ones((input_shape[-2], 1))
         dropout_mask[:zeros] = 0
@@ -19,12 +23,14 @@ class Dropout:
         return dropout_mask
 
     def train_forward(self, input):
+        """Train forward as element wise multiplication dropout_mask * input.
+        Cache created dropout mask for backpropagation."""
         self.dropout_mask = self.__create_dropout_mask(input.shape)
-        print("Dropout \n", self.dropout_mask)
-        return np.multiply(input, self.dropout_mask)
+
+        return np.multiply(self.dropout_mask, input)
 
     def train_backward(self, input):
-        if(self.dropout_mask.ndim == 3):
-            self.dropout_mask = np.apply_along_axis(np.any, 0, self.dropout_mask)
+        """Train forward as element wise multiplication dropout_mask * input.
+        Where 'input' is error propagated from followed layer."""
         
-        return np.multiply(input, self.dropout_mask)
+        return np.multiply(self.dropout_mask, input)
